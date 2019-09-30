@@ -15,11 +15,9 @@ import {
     withIsomorphicState
 } from "infrastructure-components";
 
-const startTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0);
-const endTime = (d) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23);
-
-const datestring = (d) => d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate() + "-" + d.getHours();
-const utcstring = (d) => d.getUTCFullYear() + "-" + (d.getUTCMonth()+1) + "-" + d.getUTCDate() + "-" + d.getUTCHours();
+const toDateHours = (d, hours) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours);
+const pad = (n) => n<10 ? '0'+n : n;
+const utcstring = (d) => d.getUTCFullYear() + "-" + pad(d.getUTCMonth()+1) + "-" + pad(d.getUTCDate()) + "-" + pad(d.getUTCHours());
 
 export default (
     <IsomorphicApp
@@ -50,12 +48,10 @@ export default (
                     name='React-Architect'
                     render={withDataLayer((props) => {
 
-                        const start = utcstring(startTime(new Date()));
-                        const end = utcstring(endTime(new Date()));
-                        console.log("utc from: ", start, " to ", end);
-
                         return <div>
-                            <Query {...props.getEntryScanQuery("visitentry", { visittimestamp: [start, end] })} >{
+                            <Query {...props.getEntryScanQuery("visitentry", {
+                                    visittimestamp: [toDateHours(new Date(), 0), toDateHours(new Date(), 23)]
+                            })} >{
                                 ({loading, data, error}) => {
                                     return (
                                         loading && <div>Calculating...</div>
