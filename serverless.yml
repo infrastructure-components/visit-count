@@ -49,7 +49,6 @@ provider:
         - s3:List*
       Resource: "*"
   stage: dev
-  stage_path: dev
   name: aws
   runtime: nodejs8.10
   

@@ -13,72 +13,78 @@ import {
     update,
     withDataLayer,
     withIsomorphicState
-} from "infrastructure-components";
+} from 'infrastructure-components';
 
-const toDateHours = (d, hours) => new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours);
+const setDate = (d, hours) => (
+    new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours)
+);
 const pad = (n) => n<10 ? '0'+n : n;
-const utcstring = (d) => d.getUTCFullYear() + "-" + pad(d.getUTCMonth()+1) + "-" + pad(d.getUTCDate()) + "-" + pad(d.getUTCHours());
+const utcstring = (d) => (
+    d.getUTCFullYear()
+    + "-" + pad(d.getUTCMonth()+1)
+    + "-" + pad(d.getUTCDate())
+    + "-" + pad(d.getUTCHours())
+);
 
 export default (
     <IsomorphicApp
-        stackName = "visit-count"
+        stackName = 'visit-count'
         buildPath = 'build'
         assetsPath = 'assets'
         region='eu-west-1'>
 
-        <Environment name="dev" />
+        <Environment name='dev'/>
 
-        <DataLayer id="datalayer">
-
+        <DataLayer id='datalayer'>
             <Entry
-                id="visitentry"
-                primaryKey="visittimestamp"
-                data={{
-                    visitcount: GraphQLString,
-                }}
+                id='visitentry'
+                primaryKey='visittimestamp'
+                data={{ visitcount: GraphQLString }}
             />
 
-            <WebApp
-                id="main"
-                path="*"
-                method="GET">
+            <WebApp id="main" path="*" method="GET">
 
                 <Route
                     path='/'
                     name='React-Architect'
-                    render={withDataLayer((props) => {
-
-                        return <div>
-                            <Query {...props.getEntryScanQuery("visitentry", {
-                                    visittimestamp: [toDateHours(new Date(), 0), toDateHours(new Date(), 23)]
+                    render={withDataLayer((props) => (
+                        <div>
+                            <Query {...props.getEntryScanQuery('visitentry', {
+                                visittimestamp: [
+                                    utcstring(setDate(new Date(), 0)),
+                                    utcstring(setDate(new Date(), 23))
+                                ]
                             })} >{
-                                ({loading, data, error}) => {
-                                    return (
-                                        loading && <div>Calculating...</div>
-                                    ) || (
-                                        data && <div>Total visitors today: {
-                                            data["scan_visitentry_visittimestamp"].reduce((total, entry) => total + parseInt(entry.visitcount), 0)
-                                        }</div>
-                                    ) || (
-                                        <div>Error loading data</div>
-                                    )
-                                }
+                                ({loading, data, error}) => (
+                                    loading && <div>Calculating...</div>
+                                ) || (
+                                    data && <div>Total visitors today: {
+                                        data['scan_visitentry_visittimestamp'].reduce(
+                                            (total, entry) => total + parseInt(entry.visitcount), 0
+                                        )
+                                    }</div>
+                                ) || (
+                                    <div>Error loading data</div>
+                                )
                             }</Query>
                         </div>
-                    })}>
+                    ))}>
 
-                    <Middleware callback={serviceWithDataLayer(async function (dataLayer, request, response, next) {
+                    <Middleware callback={serviceWithDataLayer(
+                        async function (dataLayer, request, response, next) {
 
-                        await update(
-                            dataLayer.client,
-                            dataLayer.updateEntryQuery("visitentry", data => ({
-                                visittimestamp: utcstring(new Date()),
-                                visitcount: data.visitcount ? parseInt(data.visitcount) + 1 : 1
-                            }))
-                        );
+                            await update(
+                                dataLayer.client,
+                                dataLayer.updateEntryQuery('visitentry', data => ({
+                                    visittimestamp: utcstring(new Date()),
+                                    visitcount: data.visitcount ?
+                                        parseInt(data.visitcount) + 1 : 1
+                                }))
+                            );
 
-                        next();
-                    })}/>
+                            next();
+                        }
+                    )}/>
 
                 </Route>
             </WebApp>
