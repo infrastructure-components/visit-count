@@ -1,15 +1,8 @@
-# Infrastructure-Components: Isomorphic App -Template
+# Visit-Count Example
 
-**Create Your Serverless React App**
+This project serves as an example of a serverless isomorphic React app.
 
-This project serves as a template of a **Serverless Service-Oriented React App** with
-[infrastructure-components](https://github.com/infrastructure-components/infrastructure-components).
+I go through all the details in my book:
+_React-Architect: Full-Stack React App Development and Serverless Deployment_
 
-## Help and Support
-
-Have a look at our [documentation](https://infrastructure-components.readthedocs.io).
-
-Infrastructure-Components are under active development. If you find a bug or need support of any kind,
-please have a look at our [Spectrum-Chat](https://spectrum.chat/infrastructure).
-
-Further, we frequently publish descriptions and tutorials on new features on [Medium.com](https://medium.com/@fzickert).
+You can download the first chapter for free at  [www.react-architect.com](https://www.react-architect.com).
