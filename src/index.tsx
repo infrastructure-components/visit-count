@@ -48,6 +48,36 @@ export default (
                     path='/'
                     name='React-Architect'
                     render={withDataLayer((props) => (
+                        /*const today = new Date();
+                        console.log("today is from "
+                            + today.getUTCFullYear()
+                            + "-" + today.getUTCMonth()
+                            + "-" + today.getUTCDate()
+                            + "-" + 5
+                            + " to "
+                            + today.getUTCFullYear()
+                            + "-" + parseInt(today.getUTCMonth()+1)
+                            + "-" + parseInt(today.getUTCDate()+(today.getHours()+5 > 23 ? 1 : 0))
+                            + "-" + 4
+                        );
+
+                        const dateToString = (d) => (
+                            d.getUTCFullYear()
+                            + "-" + parseInt(d.getUTCMonth()+1)
+                            + "-" + d.getUTCDate()
+                            + "-" + d.getUTCHours()
+                        );
+
+                        const setDate = (d, hours) => (
+                            new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours)
+                        );
+
+                        console.log("today is from "
+                            + dateToString(setDate(new Date(), 0))
+                            + " to "
+                            + dateToString(setDate(new Date(), 23))
+                        );*/
+
                         <div>
                             <Query {...props.getEntryScanQuery('visitentry', {
                                 visittimestamp: [
