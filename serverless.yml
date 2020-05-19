@@ -18,7 +18,7 @@ custom:
       - dev
     start:
       port: 8000
-      inMemory: true
+      dbPath: /Users/frank.zickert/WebstormProjects/visit-count/.dynamodb
       heapInitial: 200m
       heapMax: 1g
       migrate: true
@@ -41,19 +41,20 @@ provider:
   environment:
     STAGE: ${self:provider.stage, env:STAGE, 'dev'}
     STAGE_PATH: ${self:provider.stage_path, env:STAGE_PATH, ''}
-    DOMAIN_URL: { "Fn::Join" : ["", [" https://#{ApiGatewayRestApi}", ".execute-api.eu-west-1.amazonaws.com/${self:provider.stage, env:STAGE, 'dev'}" ] ]  }
+    DOMAIN_URL: { "Fn::Join" : ["", ["https://#{ApiGatewayRestApi}", ".execute-api.eu-west-1.amazonaws.com/${self:provider.stage, env:STAGE, 'dev'}" ] ]  }
     TABLE_NAME: ${self:service}-${self:provider.stage, env:STAGE, 'dev'}-data-layer
     GRAPHQL_PATH: query
+    BUCKET_ID: ${self:provider.staticBucket}
   iamRoleStatements:
     - Effect: Allow
       Action:
         - s3:Get*
         - s3:List*
       Resource: "*"
-  stage: prod
-  stage_path: prod
+  stage: dev
   name: aws
-  runtime: nodejs8.10
+  runtime: nodejs10.x
+  timeout: 120
   
 functions:
   server:
@@ -123,7 +124,7 @@ resources:
             integration.request.path.proxy: "method.request.path.proxy"
           IntegrationHttpMethod: ANY
           Type: HTTP_PROXY
-          Uri: https://s3-eu-west-1.amazonaws.com/${self:provider.staticBucket}/{proxy}
+          Uri: https://${self:provider.staticBucket}.s3-${self:provider.region}.amazonaws.com/{proxy}
           PassthroughBehavior: WHEN_NO_MATCH
           IntegrationResponses:
             - StatusCode: 200
@@ -184,7 +185,10 @@ resources:
                   Action:
                     - s3:Get*
                     - s3:List*
-                  Resource: "*"
+                    - s3:Put*
+                    - s3:Delete*
+                  Resource:
+                    Fn::Join: ["", ["arn:aws:s3:::", {"Ref": "StaticBucket" }, "/*"]]
                 - Effect: Allow
                   Action:
                     - dynamodb:GetItem
