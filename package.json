@@ -14,7 +14,7 @@
   "dependencies": {
     "@apollo/react-hooks": "^3.0.1",
     "@babel/polyfill": "^7.8.7",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "graphql": "^15.0.0",
     "graphql-tag": "^2.10.1",
     "infrastructure-components": "^0.3.11",
